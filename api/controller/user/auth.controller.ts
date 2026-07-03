@@ -63,6 +63,8 @@ export const login = async (req: Request, res: Response) => {
         if (!token) {
             throw new Error("Token Not Found !");
         }
+
+        console.log("this is token in cookie", req.cookies.token);
         const access_token = jwt.sign({ id: user.user_id, role: user.role }, token, { expiresIn: '30d' });
         const { password: _, ...userData } = user;
 
@@ -70,6 +72,7 @@ export const login = async (req: Request, res: Response) => {
             httpOnly: true,
             sameSite: "lax",
             secure: false, 
+            maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
         res.status(200).json({
@@ -120,5 +123,19 @@ export const userEdit = async (req: Request, res: Response) => {
         return messageResponse({ res, status: 500, message: "internal server error", data: [], error: error });
     }
 }
+
+
+export const userLogout = async (req: Request, res: Response) => {
+    try {
+        res.clearCookie("token", {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false, 
+        });
+        return messageResponse({ res, status: 200, message: "Logout successful", data: [], error: false });
+    } catch (error) {
+        return messageResponse({ res, status: 500, message: "internal server error", data: [], error: error });
+    }
+}   
 
 
