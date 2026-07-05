@@ -85,3 +85,46 @@ export const Authentication = (roleBase: string) => {
 //     });
 //   };
 // };
+
+
+// frontend user without token ;
+
+export const authMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({
+      message: "Unauthorized",
+    });
+  }
+
+  const jwtKey = process.env.JWT_SECRET_KEY;
+
+    if (!jwtKey) {
+      return res.status(500).json({
+        message: "JWT KEY is missing",
+      });
+    }
+
+    jwt.verify(token, jwtKey, (err: any, decoded: any) => {
+      if (err) {
+        return res.status(403).json({
+          message: "Invalid token",
+        });
+      }
+
+      (req as any).user = decoded;
+    });
+
+    next();
+  } catch {
+    return res.status(401).json({
+      message: "Invalid token",
+    });
+  }
+};
