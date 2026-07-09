@@ -244,14 +244,14 @@ export const verifyOtp = async (req: Request, res: Response) => {
         }
 
 
-        // await pool.query(
-        //     `
-        //     UPDATE email_otp
-        //     SET is_verified = TRUE
-        //     WHERE otp_id = $1
-        //     `,
-        //     [otpResult.rows[0].otp_id]
-        // );
+        await pool.query(
+            `
+            UPDATE users 
+            SET verify = TRUE
+            WHERE user_id = $1
+            `,
+            [otpResult.rows[0].user_id]
+        );
 
 
         return messageResponse({
@@ -271,6 +271,16 @@ export const verifyOtp = async (req: Request, res: Response) => {
         });
     }
 };
+
+export const updatePassword = async (req : Request , res : Response) => {
+    const {password,email } = req.body ;
+    const newPassword = await bcrypt.hash(password,10)
+    const user_id = req.params.user_id ;
+    const query = `UPDATE users SET password = $1 WHERE email = $2 AND user_id = $3 RETURNING * ` ;
+    const resualt = await pool.query(query ,[newPassword,email , user_id]) ;
+    if ( resualt.rows.length === 0 ) return messageResponse({res,status : 404 , message : "this user doesn't exist !" ,data : [], error : true}) ;
+    return messageResponse({res,status : 200 , message : "password has been updated !" ,data : resualt.rows[0], error : true}) ;
+}
 
 export const userLogout = async (req: Request, res: Response) => {
     try {

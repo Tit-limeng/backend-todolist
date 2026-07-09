@@ -1,4 +1,4 @@
-import { createUser, getUser, login , userEdit , userLogout , forgotPassword, verifyOtp } from '../../controller/user/auth.controller';
+import { createUser, getUser, login , userEdit , userLogout , forgotPassword, verifyOtp , updatePassword } from '../../controller/user/auth.controller';
 import { Authentication, authMiddleware } from '../../middleware/auth.middleware';
 import { Express } from 'express';
 const auth = (app: Express) => {
@@ -9,6 +9,7 @@ const auth = (app: Express) => {
     app.post('/api/user/logout', userLogout) ;
     app.post("/api/user/forgot-password" , forgotPassword) ;
     app.post("/api/user/forgot-password/verify" , verifyOtp) ;
+    app.patch("/api/user/forgot-password/updatePassword/:user_id" , updatePassword) ;
     app.get("/api/auth/check", authMiddleware, (req, res) => {
     res.status(200).json({
         success: true,
