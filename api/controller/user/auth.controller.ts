@@ -18,8 +18,42 @@ export const createUser = async (req: Request, res: Response) => {
         if (existingUser.rows.length > 0) {
             return messageResponse({ res, status: 400, message: "User already exist ", data: [], error: true });
         }
-        const query = `INSERT INTO users(username,email , password,role_id,login) VALUES($1,$2,$3,2,'false')`;
+        const query = `INSERT INTO users(username,email , password,role_id,login) VALUES($1,$2,$3,2,'true') RETURNING *`;
         const resultNewUser = await pool.query(query, [username, email, newPassword]);
+
+        if (resultNewUser) {
+            // sent otp code 
+            const user = resultNewUser.rows[0] ;
+            const otp = Math.floor(100000 + Math.random() * 900000).toString();
+            const expires = new Date(Date.now() + 3 * 60 * 1000);
+
+            const otpCodeSend = `INSERT INTO email_otp(user_id , otp_code,expires_at) VALUES($1,$2,$3) RETURNING *`;
+
+            const otpVerify = await pool.query(otpCodeSend, [user.user_id, otp, expires]);
+
+            if (otpVerify.rows.length === 0) return res.status(500).json({ message: 'Failed to create new OTP' });
+
+            const transporter = nodeMailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.MAIL_USER,
+                    pass: process.env.MAIL_PASSWORD,
+                }
+            });
+            // console.log(otpVerify.rows);
+            transporter.sendMail({
+                from: `"Todo List app" <${process.env.EMAIL_USER}>`,
+                to: user.email,
+                subject: 'Your New OTP Code',
+                text: `Your new OTP is ${otp}. It will expire in 3 minutes.`,
+            }, (mailErr) => {
+                if (mailErr) {
+                    return res.status(500).json({ message: 'Failed to send email', mailErr });
+                }
+
+                res.json({ message: 'OTP sent successfully', user_id: user.user_id });
+            });
+        }
 
         return resultNewUser ? messageResponse({ res, status: 201, message: " new user has been created ", data: resultNewUser.rows, error: false }) : messageResponse({ res, status: 500, message: "internal server error", data: [], error: true });
     } catch (error) {
@@ -109,19 +143,19 @@ export const getUser = async (req: Request, res: Response) => {
 
 export const userEdit = async (req: Request, res: Response) => {
     try {
-        const { username, password } = req.body;
+        const { username } = req.body;
         const user_id = (req as any).user.id;
         console.log("USER ID IS ", user_id);
-        const newPassword = await bcrypt.hash(password, 10);
-        const query = ` UPDATE users SET username = $1 , password =$2 WHERE user_id = $3 RETURNING *`;
-        const resultEdit = await pool.query(query, [username, newPassword, user_id]);
+        // const newPassword = await bcrypt.hash(password, 10);
+        const query = ` UPDATE users SET username = $1 WHERE user_id = $2 RETURNING *`;
+        const resultEdit = await pool.query(query, [username, user_id]);
         return resultEdit ? messageResponse({ res, status: 200, message: "data has been updated !", data: resultEdit.rows, error: false }) : messageResponse({ res, status: 404, message: "data not found ", data: [], error: true });
     } catch (error) {
         return messageResponse({ res, status: 500, message: "internal server error", data: [], error: error });
     }
 }
 
-// forgot password
+// forgot password and resend Otp 
 export const forgotPassword = async (req: Request, res: Response) => {
     const { email } = req.body;
 
@@ -248,7 +282,7 @@ export const verifyOtp = async (req: Request, res: Response) => {
             `
             UPDATE users 
             SET verify = TRUE
-            WHERE user_id = $1
+            WHERE user_id = $1 
             `,
             [otpResult.rows[0].user_id]
         );
@@ -272,14 +306,14 @@ export const verifyOtp = async (req: Request, res: Response) => {
     }
 };
 
-export const updatePassword = async (req : Request , res : Response) => {
-    const {password,email } = req.body ;
-    const newPassword = await bcrypt.hash(password,10)
-    const user_id = req.params.user_id ;
-    const query = `UPDATE users SET password = $1 WHERE email = $2 AND user_id = $3 RETURNING * ` ;
-    const resualt = await pool.query(query ,[newPassword,email , user_id]) ;
-    if ( resualt.rows.length === 0 ) return messageResponse({res,status : 404 , message : "this user doesn't exist !" ,data : [], error : true}) ;
-    return messageResponse({res,status : 200 , message : "password has been updated !" ,data : resualt.rows[0], error : true}) ;
+export const updatePassword = async (req: Request, res: Response) => {
+    const { password, email } = req.body;
+    const newPassword = await bcrypt.hash(password, 10)
+    const user_id = req.params.user_id;
+    const query = `UPDATE users SET password = $1 ,login = 'true' WHERE email = $2 AND user_id = $3 RETURNING * `;
+    const resualt = await pool.query(query, [newPassword, email, user_id]);
+    if (resualt.rows.length === 0) return messageResponse({ res, status: 404, message: "this user doesn't exist !", data: [], error: true });
+    return messageResponse({ res, status: 200, message: "password has been updated !", data: resualt.rows[0], error: true });
 }
 
 export const userLogout = async (req: Request, res: Response) => {
