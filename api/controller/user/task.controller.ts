@@ -44,7 +44,7 @@ export const userGetTask = async (req : Request , res : Response ) => {
     const user_id = ( req as any ).user.id ;
     // const {todo_id} = req.params ;
     try {
-        const query = `SELECT * FROM todos WHERE user_id=$1 `;
+        const query = `SELECT * FROM todos WHERE user_id=$1 ORDER BY created_at DESC`;
         const resultGetTask = await pool.query(query ,[user_id]) ;
         if (resultGetTask.rowCount === 0) {
             return messageResponse({
