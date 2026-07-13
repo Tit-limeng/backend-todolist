@@ -9,7 +9,7 @@ const app = express();
 // app.use(express.json());
 const PORT = process.env.PORT || 5000;
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173','http://localhost:3000'],
     credentials: true,
 }))
 
@@ -23,6 +23,11 @@ adminRoute(app);
 
 import userOnTask from './route/user/task.route';
 userOnTask(app) ;
+
+//admin dashboard 
+
+import dashboard  from './route/admin/dashboard.route';
+dashboard(app) ;
 
 app.get('/api/user', (req: Request, res: Response) => {
     return res.send("hello");
