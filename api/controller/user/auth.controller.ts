@@ -23,7 +23,7 @@ export const createUser = async (req: Request, res: Response) => {
 
         if (resultNewUser) {
             // sent otp code 
-            const user = resultNewUser.rows[0] ;
+            const user = resultNewUser.rows[0];
             const otp = Math.floor(100000 + Math.random() * 900000).toString();
             const expires = new Date(Date.now() + 3 * 60 * 1000);
 
@@ -328,5 +328,7 @@ export const userLogout = async (req: Request, res: Response) => {
         return messageResponse({ res, status: 500, message: "internal server error", data: [], error: error });
     }
 }
+
+
 
 

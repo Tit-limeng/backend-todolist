@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AdminLayout from '../../component/admin_layout'
+import { getAllUserByAdmin } from '../../config/api/api'
 
 // Mock user data
 const mockUsers = [
@@ -10,21 +11,30 @@ const mockUsers = [
   { id: 5, name: 'Casey Brown', email: 'casey@example.com', status: 'active', joinDate: 'Feb 22, 2024', tasks: 9 },
   { id: 6, name: 'Taylor Davis', email: 'taylor@example.com', status: 'active', joinDate: 'Mar 5, 2024', tasks: 7 },
 ]
-
-const statusColors= {
-  active: 'bg-green-100 text-green-800',
-  inactive: 'bg-gray-100 text-gray-800',
+const statusColors = {
+  completed: 'bg-primary text-green-100',
+  pending: 'bg-gray-100 text-gray-800',
 }
 
 export default function AdminUsers() {
+  const [userData, setUserData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredUsers = mockUsers.filter(
+  const filteredUsers = userData.filter(
     user =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+ 
+  useEffect(() => {
+     const allUser = async () => {
+    const data = await getAllUserByAdmin();
+    setUserData(data);
+  }
+
+    allUser();
+  }, [])
   return (
     <AdminLayout>
       <div className="p-8">
@@ -63,19 +73,21 @@ export default function AdminUsers() {
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map((user) => (
                     <tr key={user.id} className="hover:bg-secondary/20 transition-colors">
-                      <td className="px-6 py-4 text-foreground font-medium">{user.name}</td>
+                      <td className="px-6 py-4 text-foreground font-medium">{user.username}</td>
                       <td className="px-6 py-4 text-muted-foreground text-sm">{user.email}</td>
                       <td className="px-6 py-4">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            statusColors[user.status]
-                          }`}
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[user.status]
+                            }`}
                         >
-                          {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
+                          {/* {user.status.charAt(0).toUpperCase() + user.status.slice(1)} */}
+                          {user.status && (
+                            user.status.charAt(0).toUpperCase() + user.status.slice(1)
+                          )}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-muted-foreground text-sm">{user.joinDate}</td>
-                      <td className="px-6 py-4 text-foreground font-medium">{user.tasks}</td>
+                      <td className="px-6 py-4 text-muted-foreground text-sm">{user.user_created_at}</td>
+                      <td className="px-6 py-4 text-foreground font-medium">{user.total_todos}</td>
                       <td className="px-6 py-4">
                         <button className="text-primary hover:text-primary/80 text-sm font-medium transition-colors">
                           View

@@ -8,7 +8,7 @@ export const api = axios.create({
     withCredentials: true,
   },
 });
-
+//ADMIN DATA
 export const userData = async () => {
   try {
     const response = await api.get('/admin/getInfo', {
@@ -21,6 +21,18 @@ export const userData = async () => {
   }
 };
 
+//ALL USER DATA BY ADMIN TO SHOW IN DASHBOARD ADMIN 
+export const getAllUserByAdmin = async () => {
+  try {
+    const response = await api.get('/admin/getAllUser', {
+      withCredentials: true,
+    });
+    return response.data.data ;
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    throw error;
+  }
+};
 
 export const getUserCount = async () => {
    try {
@@ -57,3 +69,15 @@ export const getTaskPendingCount = async () => {
     console.error('something error : ',error);
    }
 }
+
+//admin logout 
+
+export const logoutUser = async () => {
+  try {
+    const response = await api.post("/user/logout");
+    return response.data;
+  } catch (error) {
+    console.error("Error logging out user:", error);
+    throw error;
+  }
+};

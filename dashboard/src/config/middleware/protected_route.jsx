@@ -7,10 +7,12 @@ import { useRef } from "react";
 
 
 export  function ProtectedRoute() {
+  const loadingBarRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
+    loadingBarRef.current?.continuousStart();
     const checkAuth = async () => {
       try {
         await api.get("/auth/check"); 
@@ -19,6 +21,7 @@ export  function ProtectedRoute() {
         setAuthenticated(false);
         console.error("Authentication check failed:", error);
       } finally {
+        loadingBarRef.current?.complete();
         setLoading(false);
       }
     };
@@ -27,7 +30,14 @@ export  function ProtectedRoute() {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <>
+    <LoadingBar
+          color="#6fc276"
+          ref={loadingBarRef}
+          height={4}
+          shadow
+        />
+        </>;
   }
 
   return authenticated ? <Outlet /> : <Navigate to="/auth/admin/login" replace />;

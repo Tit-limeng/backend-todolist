@@ -9,7 +9,7 @@ export default function StatCard({
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-muted-foreground mb-2">{title}</p>
-          <h3 className="text-3xl font-bold text-foreground">{value}</h3>
+          <h3 className="text-3xl font-bold text-primary">{value}</h3>
           {trend && (
             <p
               className={`text-xs mt-2 font-medium ${
