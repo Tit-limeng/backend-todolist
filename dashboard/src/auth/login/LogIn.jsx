@@ -11,7 +11,7 @@ export default function AdminLoginPage() {
     email: '',
     password: ''
   })
-  const [data, setData] = useState([]);
+  const [, setData] = useState([]);
   const loadingBarRef = useRef(null);
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false)
@@ -63,7 +63,7 @@ export default function AdminLoginPage() {
     loadingBarRef.current?.continuousStart();
     try {
       await new Promise(resolve => setTimeout(resolve, 1500))
-      console.log('[v0] Login successful:', formData.email);
+      // console.log('Login successful:', formData.email);
       setError({ submit: 'Login successful! Redirecting...' });
       await api.post('/admin/login', formData, {
         withCredentials: true,
@@ -105,7 +105,9 @@ export default function AdminLoginPage() {
       setData(user);
       // console.log('Data fetched:', response.data);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.log('Error fetching data:', error);
+    } finally {
+      setData([]) ;
     }
   }
 
@@ -116,7 +118,7 @@ export default function AdminLoginPage() {
   return (
     <>
      <LoadingBar
-        color="#6fc276"
+        color="#f11946"
         ref={loadingBarRef}
         height={4}
         shadow={true}
@@ -184,8 +186,7 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Demo Credentials Info */}
-            <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
+            {/* <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
               <p className="text-xs text-muted-foreground">
                 <strong>Demo Credentials:</strong>
               </p>
@@ -195,7 +196,7 @@ export default function AdminLoginPage() {
               <p className="text-xs text-muted-foreground font-mono">
                 Password: admin123
               </p>
-            </div>
+            </div> */}
 
             {/* Login Button */}
             <button

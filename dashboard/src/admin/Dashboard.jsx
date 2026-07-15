@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../component/admin_layout'
 import StatCard from '../component/state_card'
-import { getUserCount,getTaskCompletedCount ,getTaskCount,getTaskPendingCount} from '../config/api/api'
+import { getUserCount, getTaskCompletedCount, getTaskCount, getTaskPendingCount, getTopUserTask } from '../config/api/api'
 
 // Mock data
 const recentTasks = [
@@ -12,12 +12,12 @@ const recentTasks = [
   { id: 4, user: 'Sam Wilson', task: 'Schedule meeting', status: 'pending', time: 'Just now' },
 ]
 
-const users = [
-  { id: 1, name: 'Alex Morgan', email: 'alex@example.com', tasks: 12 },
-  { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', tasks: 8 },
-  { id: 3, name: 'Jordan Smith', email: 'jordan@example.com', tasks: 15 },
-  { id: 4, name: 'Sam Wilson', email: 'sam@example.com', tasks: 5 },
-]
+// const users = [
+//   { id: 1, name: 'Alex Morgan', email: 'alex@example.com', tasks: 12 },
+//   { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', tasks: 8 },
+//   { id: 3, name: 'Jordan Smith', email: 'jordan@example.com', tasks: 15 },
+//   { id: 4, name: 'Sam Wilson', email: 'sam@example.com', tasks: 5 },
+// ]
 
 const statusColors = {
   completed: 'bg-green-100 text-green-800',
@@ -25,37 +25,43 @@ const statusColors = {
   pending: 'bg-yellow-100 text-yellow-800',
 }
 
- function AdminDashboard() {
-  const [totalUsers , setTotalUsers] = useState(0) ;
-  const [totalTasks , settotalTasks] = useState(0) ;
-  const [completedTasks , setcompletedTasks] = useState(0) ;
-  const [pendingTask , setPendingTasks] = useState(0) ;
+function AdminDashboard() {
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalTasks, settotalTasks] = useState(0);
+  const [completedTasks, setcompletedTasks] = useState(0);
+  const [pendingTask, setPendingTasks] = useState(0);
+  const [users, setUsers] = useState([]);
   // const  = users.reduce((sum, user) => sum + user.tasks, 0)
   // const completionRate = Math.round((completedTasks / totalTasks) * 100)
-  
-  useEffect(()=>{
-    const TotalUsers = async () => {
-    const userCount = await getUserCount() ;
-    setTotalUsers(userCount);
-  }
-    TotalUsers() ;
-    const TotalTaskCount = async () => {
-    const totalTaskCount = await getTaskCount() ;
-    settotalTasks(totalTaskCount);
-  }
-    TotalTaskCount() ;
-    const TotalTashCompletedCount = async () => {
-    const totalTaskCompleted = await getTaskCompletedCount() ;
-    setcompletedTasks(totalTaskCompleted);
-  }
-    TotalTashCompletedCount() ;
-    const TotalTashPendingCount = async () => {
-    const totalTaskPending = await getTaskPendingCount() ;
-    setPendingTasks(totalTaskPending);
-  }
-    TotalTashPendingCount() ;
 
-  },[])
+  useEffect(() => {
+    const TotalUsers = async () => {
+      const userCount = await getUserCount();
+      setTotalUsers(userCount);
+    }
+    TotalUsers();
+    const TotalTaskCount = async () => {
+      const totalTaskCount = await getTaskCount();
+      settotalTasks(totalTaskCount);
+    }
+    TotalTaskCount();
+    const TotalTashCompletedCount = async () => {
+      const totalTaskCompleted = await getTaskCompletedCount();
+      setcompletedTasks(totalTaskCompleted);
+    }
+    TotalTashCompletedCount();
+    const TotalTashPendingCount = async () => {
+      const totalTaskPending = await getTaskPendingCount();
+      setPendingTasks(totalTaskPending);
+    }
+    TotalTashPendingCount();
+    const getTopUserTasks = async () => {
+      const topUsers = await getTopUserTask();
+      setUsers(topUsers);
+    }
+    getTopUserTasks()
+
+  }, [])
   return (
     <AdminLayout>
       <div className="p-8">
@@ -70,25 +76,25 @@ const statusColors = {
             title="Total Users"
             value={totalUsers}
             icon="👥"
-            // trend={{ value: 12, isPositive: true }}
+          // trend={{ value: 12, isPositive: true }}
           />
           <StatCard
             title="Total Tasks"
             value={totalTasks}
             icon="✓"
-            // trend={{ value: 8, isPositive: true }}
+          // trend={{ value: 8, isPositive: true }}
           />
           <StatCard
             title="Completed Tasks"
             value={completedTasks}
             icon="✅"
-            // trend={{ value: 5, isPositive: true }}
+          // trend={{ value: 5, isPositive: true }}
           />
           <StatCard
             title="Pending Tasks"
             value={`${pendingTask}%`}
             icon="📈"
-            // trend={{ value: 3, isPositive: true }}
+          // trend={{ value: 3, isPositive: true }}
           />
         </div>
 
@@ -110,9 +116,8 @@ const statusColors = {
                       </div>
                       <div className="flex items-center gap-4">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            statusColors[task.status] || statusColors.pending
-                          }`}
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[task.status] || statusColors.pending
+                            }`}
                         >
                           {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
                         </span>
@@ -132,10 +137,10 @@ const statusColors = {
                 <h2 className="text-lg font-semibold text-foreground">Top Active Users</h2>
               </div>
               <div className="divide-y divide-border">
-                {users.slice(0, 4).map((user) => (
-                  <div key={user.id} className="p-4 hover:bg-secondary/20 transition-colors">
-                    <p className="font-medium text-foreground text-sm">{user.name}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{user.tasks} tasks</p>
+                {users.map((user, index) => (
+                  <div key={index} className="p-4 hover:bg-secondary/20 transition-colors">
+                    <p className="font-medium text-foreground text-sm">{user.username}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{user.task_count} tasks</p>
                   </div>
                 ))}
               </div>

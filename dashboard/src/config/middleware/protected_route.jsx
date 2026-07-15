@@ -17,9 +17,9 @@ export  function ProtectedRoute() {
       try {
         await api.get("/auth/check"); 
         setAuthenticated(true);
-      } catch (error ) {
+      } catch {
         setAuthenticated(false);
-        console.error("Authentication check failed:", error);
+        // console.error("Authentication check failed:", error);
       } finally {
         loadingBarRef.current?.complete();
         setLoading(false);
@@ -32,7 +32,7 @@ export  function ProtectedRoute() {
   if (loading) {
     return <>
     <LoadingBar
-          color="#6fc276"
+          color="#f11946"
           ref={loadingBarRef}
           height={4}
           shadow
@@ -57,9 +57,9 @@ export function GuestRoute() {
       try {
         await api.get("/auth/check");
         setAuthenticated(true);
-      } catch (error) {
+      } catch {
         setAuthenticated(false);
-        console.log("Not authenticated",error);
+        // console.log("Not authenticated",error);
       } finally {
         loadingBarRef.current?.complete();
         setLoading(false);
@@ -73,7 +73,7 @@ export function GuestRoute() {
     return (
       <>
         <LoadingBar
-          color="#6fc276"
+          color="#f11946"
           ref={loadingBarRef}
           height={4}
           shadow

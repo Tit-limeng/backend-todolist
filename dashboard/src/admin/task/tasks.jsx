@@ -1,17 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AdminLayout from '../../component/admin_layout'
+import { getUserTask } from '../../config/api/api'
 
-// Mock task data
-const mockTasks = [
-  { id: 1, title: 'Complete project proposal', user: 'Alex Morgan', status: 'completed', priority: 'high', createdAt: 'Mar 1, 2024' },
-  { id: 2, title: 'Review team feedback', user: 'Sarah Johnson', status: 'in-progress', priority: 'high', createdAt: 'Mar 3, 2024' },
-  { id: 3, title: 'Update documentation', user: 'Jordan Smith', status: 'pending', priority: 'medium', createdAt: 'Mar 5, 2024' },
-  { id: 4, title: 'Schedule meeting', user: 'Sam Wilson', status: 'pending', priority: 'low', createdAt: 'Mar 6, 2024' },
-  { id: 5, title: 'Fix bug in dashboard', user: 'Casey Brown', status: 'completed', priority: 'high', createdAt: 'Feb 28, 2024' },
-  { id: 6, title: 'Prepare quarterly report', user: 'Taylor Davis', status: 'in-progress', priority: 'medium', createdAt: 'Mar 2, 2024' },
-  { id: 7, title: 'Client presentation', user: 'Alex Morgan', status: 'pending', priority: 'high', createdAt: 'Mar 4, 2024' },
-  { id: 8, title: 'Database optimization', user: 'Jordan Smith', status: 'completed', priority: 'medium', createdAt: 'Feb 25, 2024' },
-]
+// // Mock task data
+// const mockTasks = [
+//   { id: 1, title: 'Complete project proposal', user: 'Alex Morgan', status: 'completed', priority: 'high', createdAt: 'Mar 1, 2024' },
+//   { id: 2, title: 'Review team feedback', user: 'Sarah Johnson', status: 'in-progress', priority: 'high', createdAt: 'Mar 3, 2024' },
+//   { id: 3, title: 'Update documentation', user: 'Jordan Smith', status: 'pending', priority: 'medium', createdAt: 'Mar 5, 2024' },
+//   { id: 4, title: 'Schedule meeting', user: 'Sam Wilson', status: 'pending', priority: 'low', createdAt: 'Mar 6, 2024' },
+//   { id: 5, title: 'Fix bug in dashboard', user: 'Casey Brown', status: 'completed', priority: 'high', createdAt: 'Feb 28, 2024' },
+//   { id: 6, title: 'Prepare quarterly report', user: 'Taylor Davis', status: 'in-progress', priority: 'medium', createdAt: 'Mar 2, 2024' },
+//   { id: 7, title: 'Client presentation', user: 'Alex Morgan', status: 'pending', priority: 'high', createdAt: 'Mar 4, 2024' },
+//   { id: 8, title: 'Database optimization', user: 'Jordan Smith', status: 'completed', priority: 'medium', createdAt: 'Feb 25, 2024' },
+// ]
 
 const statusColors = {
   completed: 'bg-green-100 text-green-800',
@@ -27,32 +28,58 @@ const priorityColors = {
 
 export default function AdminTasks() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterStatus, setFilterStatus] = useState('all') ;
-
-  const filteredTasks = mockTasks.filter(
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [usersTask, setUsersTask] = useState([]);
+  const filteredTasks = usersTask.filter(
     task =>
       (task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        task.user.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        task.username.toLowerCase().includes(searchTerm.toLowerCase())) &&
       (filterStatus === 'all' || task.status === filterStatus)
   )
 
   const stats = {
-    total: mockTasks.length,
-    completed: mockTasks.filter(t => t.status === 'completed').length,
-    inProgress: mockTasks.filter(t => t.status === 'in-progress').length,
-    pending: mockTasks.filter(t => t.status === 'pending').length,
+    total: usersTask.length,
+    completed: usersTask.filter(t => t.status === 'completed').length,
+    inProgress: usersTask.filter(t => t.status === 'in-progress').length,
+    pending: usersTask.filter(t => t.status === 'pending').length,
   }
 
+
+
+  useEffect(() => {
+    // const totalTask = async() =>{
+    //   const taskCount = await getTaskCount();
+    //   settotalTasks(taskCount) ;
+    // }
+    // totalTask() ;
+    //  const TotalTashCompletedCount = async () => {
+    //     const totalTaskCompleted = await getTaskCompletedCount() ;
+    //     setcompletedTasks(totalTaskCompleted);
+    //   }
+    //     TotalTashCompletedCount() ;
+    //     const TotalTashPendingCount = async () => {
+    //     const totalTaskPending = await getTaskPendingCount() ;
+    //     setPendingTasks(totalTaskPending);
+    //     }
+    //     TotalTashPendingCount() ;
+
+    const getUsersTask = async () => {
+      const data = await getUserTask();
+      // console.log(data);
+      setUsersTask(data);
+    }
+    getUsersTask()
+
+  }, []);
   return (
     <AdminLayout>
       <div className="p-8">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Tasks Monitoring</h1>
           <p className="text-muted-foreground">Monitor and track all user tasks</p>
         </div>
 
-        {/* Stats */}
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-card rounded-lg border border-border p-4">
             <p className="text-sm text-muted-foreground mb-1">Total Tasks</p>
@@ -64,7 +91,7 @@ export default function AdminTasks() {
           </div>
           <div className="bg-card rounded-lg border border-border p-4">
             <p className="text-sm text-muted-foreground mb-1">In Progress</p>
-            <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
+            <p className="text-2xl font-bold text-blue-600">{stats.pending}</p>
           </div>
           <div className="bg-card rounded-lg border border-border p-4">
             <p className="text-sm text-muted-foreground mb-1">Pending</p>
@@ -72,7 +99,6 @@ export default function AdminTasks() {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-6">
           <input
             type="text"
@@ -93,7 +119,6 @@ export default function AdminTasks() {
           </select>
         </div>
 
-        {/* Tasks Table */}
         <div className="bg-card rounded-lg border border-border shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -108,29 +133,29 @@ export default function AdminTasks() {
               </thead>
               <tbody className="divide-y divide-border">
                 {filteredTasks.length > 0 ? (
-                  filteredTasks.map((task) => (
-                    <tr key={task.id} className="hover:bg-secondary/20 transition-colors">
+                  filteredTasks.map((task , index) => (
+                    <tr key={index} className="hover:bg-secondary/20 transition-colors">
                       <td className="px-6 py-4 text-foreground font-medium">{task.title}</td>
-                      <td className="px-6 py-4 text-muted-foreground text-sm">{task.user}</td>
+                      <td className="px-6 py-4 text-muted-foreground text-sm">{task.username}</td>
                       <td className="px-6 py-4">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            statusColors[task.status]
-                          }`}
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[task.status]
+                            }`}
                         >
                           {task.status.charAt(0).toUpperCase() + task.status.slice(1).replace('-', ' ')}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            priorityColors[task.priority]
-                          }`}
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${priorityColors[task.priority]
+                            }`}
                         >
                           {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-muted-foreground text-sm">{task.createdAt}</td>
+                      <td className="px-6 py-4 text-muted-foreground text-sm">
+                        {new Date(task.created_at).toLocaleDateString()}
+                      </td>
                     </tr>
                   ))
                 ) : (
@@ -147,7 +172,7 @@ export default function AdminTasks() {
           {/* Footer */}
           <div className="px-6 py-4 border-t border-border bg-secondary/20 flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              Showing {filteredTasks.length} of {mockTasks.length} tasks
+              Showing {filteredTasks.length} of {usersTask.length} tasks
             </p>
           </div>
         </div>
