@@ -12,12 +12,6 @@ const recentTasks = [
   { id: 4, user: 'Sam Wilson', task: 'Schedule meeting', status: 'pending', time: 'Just now' },
 ]
 
-// const users = [
-//   { id: 1, name: 'Alex Morgan', email: 'alex@example.com', tasks: 12 },
-//   { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', tasks: 8 },
-//   { id: 3, name: 'Jordan Smith', email: 'jordan@example.com', tasks: 15 },
-//   { id: 4, name: 'Sam Wilson', email: 'sam@example.com', tasks: 5 },
-// ]
 
 const statusColors = {
   completed: 'bg-green-100 text-green-800',
@@ -31,9 +25,6 @@ function AdminDashboard() {
   const [completedTasks, setcompletedTasks] = useState(0);
   const [pendingTask, setPendingTasks] = useState(0);
   const [users, setUsers] = useState([]);
-  // const  = users.reduce((sum, user) => sum + user.tasks, 0)
-  // const completionRate = Math.round((completedTasks / totalTasks) * 100)
-
   useEffect(() => {
     const TotalUsers = async () => {
       const userCount = await getUserCount();

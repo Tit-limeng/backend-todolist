@@ -73,16 +73,7 @@ export const getUserTask = async (req: Request, res: Response) => {
 export const topUserTask = async (req : Request , res : Response) => {
     // const query = `SELECT * FROM todos LEFT JOIN users ON users.user_id = todos.user_id `;
    try {
-    //  const query = `SELECT
-    // u.user_id,
-    // u.username,
-    // COUNT(t.todo_id) AS task_count
-    // FROM users u
-    // JOIN todos t
-    //     ON u.user_id = t.user_id
-    // GROUP BY u.user_id, u.username
-    // HAVING COUNT(t.todo_id)
-    // ORDER BY task_count DESC LIMIT 5;`
+
         const query = `
     SELECT
         u.user_id,

@@ -1,5 +1,4 @@
 import { Message } from '../type/type';
-import { Response } from 'express';
 
 export const messageResponse = ({res ,status ,message, data ,error } : Message) => {
 

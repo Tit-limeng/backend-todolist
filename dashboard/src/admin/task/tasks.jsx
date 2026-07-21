@@ -2,21 +2,9 @@ import { useEffect, useState } from 'react'
 import AdminLayout from '../../component/admin_layout'
 import { getUserTask } from '../../config/api/api'
 
-// // Mock task data
-// const mockTasks = [
-//   { id: 1, title: 'Complete project proposal', user: 'Alex Morgan', status: 'completed', priority: 'high', createdAt: 'Mar 1, 2024' },
-//   { id: 2, title: 'Review team feedback', user: 'Sarah Johnson', status: 'in-progress', priority: 'high', createdAt: 'Mar 3, 2024' },
-//   { id: 3, title: 'Update documentation', user: 'Jordan Smith', status: 'pending', priority: 'medium', createdAt: 'Mar 5, 2024' },
-//   { id: 4, title: 'Schedule meeting', user: 'Sam Wilson', status: 'pending', priority: 'low', createdAt: 'Mar 6, 2024' },
-//   { id: 5, title: 'Fix bug in dashboard', user: 'Casey Brown', status: 'completed', priority: 'high', createdAt: 'Feb 28, 2024' },
-//   { id: 6, title: 'Prepare quarterly report', user: 'Taylor Davis', status: 'in-progress', priority: 'medium', createdAt: 'Mar 2, 2024' },
-//   { id: 7, title: 'Client presentation', user: 'Alex Morgan', status: 'pending', priority: 'high', createdAt: 'Mar 4, 2024' },
-//   { id: 8, title: 'Database optimization', user: 'Jordan Smith', status: 'completed', priority: 'medium', createdAt: 'Feb 25, 2024' },
-// ]
-
 const statusColors = {
   completed: 'bg-green-100 text-green-800',
-  'in-progress': 'bg-blue-100 text-blue-800',
+  'in_progress': 'bg-blue-100 text-blue-800',
   pending: 'bg-yellow-100 text-yellow-800',
 }
 
@@ -40,7 +28,7 @@ export default function AdminTasks() {
   const stats = {
     total: usersTask.length,
     completed: usersTask.filter(t => t.status === 'completed').length,
-    inProgress: usersTask.filter(t => t.status === 'in-progress').length,
+    inProgress: usersTask.filter(t => t.status === 'in_progress').length,
     pending: usersTask.filter(t => t.status === 'pending').length,
   }
 
@@ -83,7 +71,7 @@ export default function AdminTasks() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-card rounded-lg border border-border p-4">
             <p className="text-sm text-muted-foreground mb-1">Total Tasks</p>
-            <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+            <p className="text-2xl font-bold text-primary">{stats.total}</p>
           </div>
           <div className="bg-card rounded-lg border border-border p-4">
             <p className="text-sm text-muted-foreground mb-1">Completed</p>
@@ -91,7 +79,7 @@ export default function AdminTasks() {
           </div>
           <div className="bg-card rounded-lg border border-border p-4">
             <p className="text-sm text-muted-foreground mb-1">In Progress</p>
-            <p className="text-2xl font-bold text-blue-600">{stats.pending}</p>
+            <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
           </div>
           <div className="bg-card rounded-lg border border-border p-4">
             <p className="text-sm text-muted-foreground mb-1">Pending</p>
@@ -114,7 +102,7 @@ export default function AdminTasks() {
           >
             <option value="all">All Status</option>
             <option value="completed">Completed</option>
-            <option value="in-progress">In Progress</option>
+            <option value="in_progress">In Progress</option>
             <option value="pending">Pending</option>
           </select>
         </div>

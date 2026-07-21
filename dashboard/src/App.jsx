@@ -11,21 +11,6 @@ import { GuestRoute, ProtectedRoute } from './config/middleware/protected_route'
 function App() {
   return (
     <>
-
-      {/* <BrowserRouter>
-        <Routes>
-          <Route element={<GuestRoute />}>
-          <Route path="/auth/admin/login" element={<AdminLoginPage />} />
-          </Route>
-          <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<AdminDashboard />} />
-          <Route path="/admin/tasks" element={<AdminTasks />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
-          </Route>
-
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter> */}
       <BrowserRouter>
       <Routes>
 
