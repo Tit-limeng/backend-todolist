@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
 import { messageResponse } from '../../response/response.message';
 import nodeMailer from 'nodemailer'
-
+import { OAuth2Client } from "google-auth-library";
 export const createUser = async (req: Request, res: Response) => {
     try {
         const { username, email, password } = req.body;
@@ -122,6 +122,139 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
+
+//google login 
+
+const client = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID
+);
+
+export const googleLogin = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    // Check environment variable
+    const googleClientId = process.env.GOOGLE_CLIENT_ID;
+    const jwtSecret = process.env.JWT_SECRET_KEY;
+
+    if (!googleClientId || !jwtSecret) {
+      res.status(500).json({
+        message: "Missing environment variables",
+      });
+      return;
+    }
+
+    // Get Google credential from React
+    const { credential } = req.body as {
+      credential: string;
+    };
+
+    if (!credential) {
+      res.status(400).json({
+        message: "Google credential is required",
+      });
+      return;
+    }
+
+
+    // Verify Google token
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: googleClientId,
+    });
+
+
+    // Get Google user data
+    const payload = ticket.getPayload();
+
+    if (!payload) {
+      res.status(401).json({
+        message: "Invalid Google token",
+      });
+      return;
+    }
+
+
+    const {
+      email,
+      name,
+      sub,
+      email_verified,
+    } = payload;
+
+
+    if (!email || !email_verified) {
+      res.status(401).json({
+        message: "Google email is not verified",
+      });
+      return;
+    }
+
+
+    // Find user
+        const query = ` SELECT * FROM users INNER JOIN roles ON users.role_id = roles.role_id WHERE users.email = $1 AND users.role_id = 2 AND users.login=true`;
+    let result = await pool.query(
+      query ,
+      [email]
+    );
+
+
+    // Create user if not exists
+    if (result.rows.length === 0) {
+
+      result = await pool.query(
+        `
+        INSERT INTO users
+        (
+          username,
+          email,
+          google_id,
+        )
+        VALUES($1,$2,$3,$4)
+        RETURNING *
+        `,
+        [
+          name,
+          email,
+          sub,
+        ]
+      );
+    }
+
+
+    const user = result.rows[0];
+
+    const access_token = jwt.sign({ id: user.user_id, role: user.role }, jwtSecret, { expiresIn: '30d' });
+
+
+
+    // Save cookie
+    res.cookie("token", access_token, {
+      httpOnly: true,
+      secure: false, 
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
+
+    console.log('this is user data : ' , user) ;
+     res.status(200).json({
+            message: 'Login successful',
+            error: false,
+            user: user,
+            access_token: access_token
+        });
+
+
+  } catch (error) {
+
+    console.error("Google Login Error:", error);
+
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
 
 export const getUser = async (req: Request, res: Response) => {
     try {
