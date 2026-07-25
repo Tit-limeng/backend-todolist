@@ -14,6 +14,7 @@ const priorityColors = {
   low: 'bg-blue-100 text-blue-800',
 }
 
+const listBar = ["Task Title", "User" , "Status" , "Priority" ,"Created At"] ;
 export default function AdminTasks() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all');
@@ -35,22 +36,6 @@ export default function AdminTasks() {
 
 
   useEffect(() => {
-    // const totalTask = async() =>{
-    //   const taskCount = await getTaskCount();
-    //   settotalTasks(taskCount) ;
-    // }
-    // totalTask() ;
-    //  const TotalTashCompletedCount = async () => {
-    //     const totalTaskCompleted = await getTaskCompletedCount() ;
-    //     setcompletedTasks(totalTaskCompleted);
-    //   }
-    //     TotalTashCompletedCount() ;
-    //     const TotalTashPendingCount = async () => {
-    //     const totalTaskPending = await getTaskPendingCount() ;
-    //     setPendingTasks(totalTaskPending);
-    //     }
-    //     TotalTashPendingCount() ;
-
     const getUsersTask = async () => {
       const data = await getUserTask();
       // console.log(data);
@@ -112,11 +97,17 @@ export default function AdminTasks() {
             <table className="w-full">
               <thead className="bg-secondary/50 border-b border-border">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Task Title</th>
+                  {
+                    listBar.map((i,index) => (
+                  <th key={index} className="px-6 py-4 text-left text-sm font-semibold text-foreground">{i}</th>
+
+                    ))
+                  }
+                  {/* <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Task Title</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">User</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Status</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Priority</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Created</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Created</th> */}
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">

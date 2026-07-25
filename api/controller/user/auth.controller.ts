@@ -134,7 +134,6 @@ export const googleLogin = async (
   res: Response
 ): Promise<void> => {
   try {
-    // Check environment variable
     const googleClientId = process.env.GOOGLE_CLIENT_ID;
     const jwtSecret = process.env.JWT_SECRET_KEY;
 
@@ -145,7 +144,6 @@ export const googleLogin = async (
       return;
     }
 
-    // Get Google credential from React
     const { credential } = req.body as {
       credential: string;
     };
@@ -157,15 +155,11 @@ export const googleLogin = async (
       return;
     }
 
-
-    // Verify Google token
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: googleClientId,
     });
 
-
-    // Get Google user data
     const payload = ticket.getPayload();
 
     if (!payload) {
@@ -255,6 +249,150 @@ export const googleLogin = async (
     });
   }
 };
+
+
+// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// export const googleLogin = async (
+//   req: Request,
+//   res: Response
+// ): Promise<void> => {
+//   try {
+//     const googleClientId = process.env.GOOGLE_CLIENT_ID;
+//     const jwtSecret = process.env.JWT_SECRET_KEY;
+
+//     if (!googleClientId || !jwtSecret) {
+//       res.status(500).json({
+//         message: "Missing environment variables",
+//         error: true,
+//       });
+//       return;
+//     }
+
+//     const { credential } = req.body;
+
+//     if (!credential) {
+//       res.status(400).json({
+//         message: "Google credential is required",
+//         error: true,
+//       });
+//       return;
+//     }
+
+//     // Verify Google Token
+//     const ticket = await client.verifyIdToken({
+//       idToken: credential,
+//       audience: googleClientId,
+//     });
+
+//     const payload = ticket.getPayload();
+
+//     if (!payload) {
+//       res.status(401).json({
+//         message: "Invalid Google token",
+//         error: true,
+//       });
+//       return;
+//     }
+
+//     const {
+//       email,
+//       name,
+//       sub,
+//       email_verified,
+//     } = payload;
+
+//     if (!email || !email_verified) {
+//       res.status(401).json({
+//         message: "Google email is not verified",
+//         error: true,
+//       });
+//       return;
+//     }
+
+//     // Create user if doesn't exist, otherwise update Google ID
+//     await pool.query(
+//       `
+//       INSERT INTO users
+//       (
+//         username,
+//         email,
+//         google_id,
+//         role_id,
+//         login
+//       )
+//       VALUES
+//       (
+//         $1,
+//         $2,
+//         $3,
+//         $4,
+//         $5
+//       )
+//       ON CONFLICT (email)
+//       DO UPDATE
+//       SET
+//         username = EXCLUDED.username,
+//         google_id = EXCLUDED.google_id
+//       `,
+//       [
+//         name,
+//         email,
+//         sub,
+//         2,      // Default Role
+//         true,   // Active account
+//       ]
+//     );
+
+//     // Get user with role
+//     const result = await pool.query(
+//       `
+//       SELECT
+//         users.*,
+//         roles.role
+//       FROM users
+//       INNER JOIN roles
+//       ON users.role_id = roles.role_id
+//       WHERE users.email = $1
+//       `,
+//       [email]
+//     );
+
+//     const user = result.rows[0];
+
+//     const access_token = jwt.sign(
+//       {
+//         id: user.user_id,
+//         role: user.role,
+//       },
+//       jwtSecret,
+//       {
+//         expiresIn: "30d",
+//       }
+//     );
+
+//     res.cookie("token", access_token, {
+//       httpOnly: true,
+//       secure: false, // true in production with HTTPS
+//       sameSite: "lax",
+//       maxAge: 30 * 24 * 60 * 60 * 1000,
+//     });
+
+//     res.status(200).json({
+//       message: "Login successful",
+//       error: false,
+//       access_token,
+//       user,
+//     });
+//   } catch (error) {
+//     console.error("Google Login Error:", error);
+
+//     res.status(500).json({
+//       message: "Internal server error",
+//       error: true,
+//     });
+//   }
+// };
 
 export const getUser = async (req: Request, res: Response) => {
     try {
