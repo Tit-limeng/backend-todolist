@@ -50,12 +50,12 @@ export default function AdminSidebar() {
   }}
 />
     <aside className="w-64 bg-slate-900 text-white h-screen fixed left-0 top-0 shadow-lg">
-      {/* Logo */}
+  
       <div className="p-6 border-b border-slate-700">
         <h1 className="text-xl font-bold">TaskFlow Admin</h1>
       </div>
 
-      {/* Navigation */}
+  
       <nav className="p-4 space-y-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href

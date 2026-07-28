@@ -14,7 +14,6 @@ function App() {
       <BrowserRouter>
       <Routes>
 
-        {/* Guest Only */}
         <Route element={<GuestRoute />}>
           <Route 
             path="/auth/admin/login" 
@@ -22,14 +21,12 @@ function App() {
           />
         </Route>
 
-        {/* Protected */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<AdminDashboard />} />
           <Route path="/admin/tasks" element={<AdminTasks />} />
           <Route path="/admin/users" element={<AdminUsers />} />
         </Route>
 
-        {/* 404 */}
         <Route path="*" element={<NotFound />} />
 
       </Routes>
