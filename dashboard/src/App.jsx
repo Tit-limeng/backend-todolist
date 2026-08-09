@@ -7,6 +7,7 @@ import './index.css'
 import AdminLoginPage from './auth/login/LogIn';
 import NotFound from '../Not_Found';
 import { GuestRoute, ProtectedRoute } from './config/middleware/protected_route';
+import AdminInfo from './admin/adminInfo/admin';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/" element={<AdminDashboard />} />
           <Route path="/admin/tasks" element={<AdminTasks />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/info" element={<AdminInfo />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

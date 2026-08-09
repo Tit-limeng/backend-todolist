@@ -103,3 +103,17 @@ export const topUserTask = async (req : Request , res : Response) => {
         return messageResponse({ res, status: 500, message: "internal server error", data: [error], error: true });
    }
 }
+
+
+//admin info
+
+export const addNewUserRole = async (req : Request , res : Response) => {
+    const { username , email , password , role } = req.body ;
+    try {
+        const query = `INSERT INTO users (username , email , password , role) VALUES ($1 , $2 , $3 , $4) RETURNING *`;
+        const result = await pool.query(query , [username , email , password , role]) ;
+        return result ? messageResponse({ res, status: 200, message: "add new user role successfully", data: result.rows[0], error: false }) : messageResponse({ res, status: 404, message: "user not found", data: [], error: true })
+    } catch (error) {
+        return messageResponse({ res, status: 500, message: "internal server error", data: [error], error: true });
+    }
+}
