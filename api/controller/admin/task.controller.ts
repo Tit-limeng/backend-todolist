@@ -1,7 +1,7 @@
 import { pool } from "../../connection/db.connection"
 import { Request, Response } from "express"
 import { messageResponse } from "../../response/response.message";
-
+import bcrypt from "bcrypt" ;
 export const userCount = async (req: Request, res: Response) => {
     try {
         const query = `SELECT COUNT(user_id) FROM users`;
@@ -108,11 +108,28 @@ export const topUserTask = async (req : Request , res : Response) => {
 //admin info
 
 export const addNewUserRole = async (req : Request , res : Response) => {
-    const { username , email , password , role } = req.body ;
+    const { username , email , password , role_id } = req.body ;
+    const encryptedPassword = await bcrypt.hash(password, 10) ;
     try {
-        const query = `INSERT INTO users (username , email , password , role) VALUES ($1 , $2 , $3 , $4) RETURNING *`;
-        const result = await pool.query(query , [username , email , password , role]) ;
+        if ( !username || !email || !encryptedPassword || !role_id ) {
+            return messageResponse({ res, status: 400, message: "username , email , password and role_id are required", data: [], error: true });
+        }
+        const query = `INSERT INTO users (username , email , password , role_id) VALUES ($1 , $2 , $3 , $4) RETURNING *`;
+        const result = await pool.query(query , [username , email , encryptedPassword , role_id]) ;
+        console.log(username , email , encryptedPassword , role_id) ;
         return result ? messageResponse({ res, status: 200, message: "add new user role successfully", data: result.rows[0], error: false }) : messageResponse({ res, status: 404, message: "user not found", data: [], error: true })
+    } catch (error) {
+        return messageResponse({ res, status: 500, message: "internal server error", data: [error], error: true });
+    }
+}
+
+//get user admin role by admin
+
+export const getUserAdminRole = async ( req :Request , res : Response ) => {
+    try {
+        const query = `SELECT * FROM users`;
+        const result = await pool.query(query) ;
+        return result ? messageResponse({ res, status: 200, message: "get user admin role successfully", data: result.rows, error: false }) : messageResponse({ res, status: 404, message: "user not found", data: [], error: true })
     } catch (error) {
         return messageResponse({ res, status: 500, message: "internal server error", data: [error], error: true });
     }
