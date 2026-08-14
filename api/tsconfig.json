@@ -14,6 +14,7 @@
     "target": "esnext",
     "esModuleInterop": true,
     "strict": true,
+    "outDir": "./dist",
 
     // "skipLibCheck": true ,
     // For nodejs:
