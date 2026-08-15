@@ -601,5 +601,14 @@ export const userLogout = async (req: Request, res: Response) => {
 }
 
 
-
+//get all user 
+export const getAllUser = async (req: Request, res: Response) => {
+    try {
+        const query = `SELECT * FROM users `;
+        const result = await pool.query(query);
+        return messageResponse({ res, status: 200, message: "Users retrieved successfully", data: result.rows, error: false });
+    } catch (error) {
+        return messageResponse({ res, status: 500, message: "internal server error", data: [], error: error });
+    }
+}
 
