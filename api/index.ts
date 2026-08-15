@@ -9,7 +9,7 @@ const app = express();
 // app.use(express.json());
 const PORT = process.env.PORT || 5000;
 app.use(cors({
-    origin: ['https://frontend-todolist-49qmw05ae-tit-limengs-projects.vercel.app'],
+    origin: 'https://frontend-todolist-49qmw05ae-tit-limengs-projects.vercel.app',
     credentials: true,
 }))
 
