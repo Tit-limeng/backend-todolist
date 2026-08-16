@@ -18,6 +18,13 @@ export const Authentication = (roleBase: string) => {
 console.log("NODE_ENV:", process.env.NODE_ENV);
 console.log("COOKIES:", req.cookies);
 console.log("TOKEN:", req.cookies?.token);
+console.log("========== AUTH MIDDLEWARE ==========");
+    console.log("METHOD:", req.method);
+    console.log("URL:", req.originalUrl);
+    console.log("ORIGIN:", req.headers.origin);
+    console.log("COOKIES:", req.cookies);
+    console.log("TOKEN:", req.cookies?.token);
+    console.log("======================================");
     if (!jwtKey) {
       return res.status(500).json({
         message: "JWT KEY is missing",
