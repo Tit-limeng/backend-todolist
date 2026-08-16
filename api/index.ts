@@ -34,7 +34,11 @@ app.use(
   })
 );
 
+// console.log("NODE_ENV:", process.env.NODE_ENV);
+const isProduction = process.env.NODE_ENV === "production";
+
 console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("isProduction:", isProduction);
 app.use(express.json());
 app.use(cookieParser());
 import userRoute from './route/user/auth.route';
