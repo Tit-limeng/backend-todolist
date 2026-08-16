@@ -13,28 +13,37 @@ const PORT = process.env.PORT || 5000;
 //     credentials: true,
 // }))
 
-const allowedOrigins = [
-  "https://backend-todolist-alpha.vercel.app",
-  "https://frontend-todolist-sigma.vercel.app",
-];
-
+// const allowedOrigins = [
+//   "https://backend-todolist-alpha.vercel.app",
+//   "https://frontend-todolist-sigma.vercel.app",
+// ];
 app.use(
   cors({
-    origin: (origin, callback) => {
-      console.log("REQUEST ORIGIN:", origin);
-
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.log("BLOCKED ORIGIN:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: [
+      "https://backend-todolist-alpha.vercel.app",
+      "https://frontend-todolist-sigma.vercel.app",
+    ],
     credentials: true,
   })
 );
 
-// console.log("NODE_ENV:", process.env.NODE_ENV);
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       console.log("REQUEST ORIGIN:", origin);
+
+//       if (!origin || allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         console.log("BLOCKED ORIGIN:", origin);
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//   })
+// );
+
+console.log("NODE_ENV:", process.env.NODE_ENV);
 const isProduction = process.env.NODE_ENV === "production";
 
 console.log("NODE_ENV:", process.env.NODE_ENV);
