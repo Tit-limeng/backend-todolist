@@ -97,11 +97,12 @@ export const login = async (req: Request, res: Response) => {
         console.log("this is token in cookie", req.cookies.token);
         const access_token = jwt.sign({ id: user.user_id, role: user.role }, token, { expiresIn: '30d' });
         const { password: _, ...userData } = user;
-
+        const isProduction = process.env.NODE_ENV === "production";
+        
         res.cookie("token", access_token, {
             httpOnly: true,
-            sameSite: "lax",
-            secure: false,
+            sameSite: "none",
+            secure: isProduction,
             maxAge: 30 * 24 * 60 * 60 * 1000,
             // maxAge : 1 * 60 * 1000 ,
         });
@@ -224,10 +225,11 @@ export const googleLogin = async (
 
 
     // Save cookie
+        const isProduction = process.env.NODE_ENV === "production";
     res.cookie("token", access_token, {
       httpOnly: true,
-      secure: false, 
-      sameSite: "lax",
+      secure: isProduction,
+      sameSite: "none",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
@@ -589,10 +591,12 @@ export const updatePassword = async (req: Request, res: Response) => {
 
 export const userLogout = async (req: Request, res: Response) => {
     try {
+        const isProduction = process.env.NODE_ENV === "production";
+
         res.clearCookie("token", {
             httpOnly: true,
             sameSite: "lax",
-            secure: false,
+            secure: isProduction,
         });
         return messageResponse({ res, status: 200, message: "Logout successful", data: [], error: false });
     } catch (error) {
