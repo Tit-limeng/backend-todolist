@@ -15,7 +15,9 @@ export const Authentication = (roleBase: string) => {
     }
 
     const jwtKey = process.env.JWT_SECRET_KEY;
-
+console.log("NODE_ENV:", process.env.NODE_ENV);
+console.log("COOKIES:", req.cookies);
+console.log("TOKEN:", req.cookies?.token);
     if (!jwtKey) {
       return res.status(500).json({
         message: "JWT KEY is missing",
