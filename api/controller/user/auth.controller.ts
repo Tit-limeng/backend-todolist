@@ -592,12 +592,14 @@ export const updatePassword = async (req: Request, res: Response) => {
 
 export const userLogout = async (req: Request, res: Response) => {
     try {
-        const isProduction = process.env.NODE_ENV === "production";
+        // const isProduction = process.env.NODE_ENV === "production";
 
         res.clearCookie("token", {
             httpOnly: true,
-            sameSite: "lax",
-            secure: isProduction,
+            sameSite: "none",
+            secure: true,
+            path: "/",
+            maxAge: 0,
         });
         return messageResponse({ res, status: 200, message: "Logout successful", data: [], error: false });
     } catch (error) {
