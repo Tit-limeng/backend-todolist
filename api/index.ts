@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 5000;
 // }))
 
 const allowedOrigins = [
-  "https://frontend-todolist-49qmw05ae-tit-limengs-projects.vercel.app",
-  "https://frontend-todolist-git-main-tit-limengs-projects.vercel.app",
+  "https://backend-todolist-alpha.vercel.app",
+  "https://frontend-todolist-sigma.vercel.app",
 ];
 
 app.use(
