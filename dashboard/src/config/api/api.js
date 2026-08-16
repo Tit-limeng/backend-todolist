@@ -1,3 +1,13 @@
+// import axios from "axios";
+
+// export const api = axios.create({
+//   baseURL: import.meta.env.VITE_API_URL,
+//   withCredentials: true,
+//   headers: {
+//     "Content-Type": "application/json",
+//     withCredentials: true,
+//   },
+// });
 import axios from "axios";
 
 export const api = axios.create({
@@ -5,7 +15,6 @@ export const api = axios.create({
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
-    withCredentials: true,
   },
 });
 //ADMIN DATA
