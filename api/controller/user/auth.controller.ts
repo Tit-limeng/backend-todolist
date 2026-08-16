@@ -101,7 +101,7 @@ export const login = async (req: Request, res: Response) => {
         
         res.cookie("token", access_token, {
             httpOnly: true,
-            sameSite: "none",
+            sameSite: isProduction ? "none" : "lax",
             secure: isProduction,
             maxAge: 30 * 24 * 60 * 60 * 1000,
             // maxAge : 1 * 60 * 1000 ,
@@ -229,7 +229,8 @@ export const googleLogin = async (
     res.cookie("token", access_token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: "none",
+    //   sameSite: "none",
+    sameSite: isProduction ? "none" : "lax",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
 
