@@ -33,6 +33,8 @@ app.use(
     credentials: true,
   })
 );
+
+console.log("NODE_ENV:", process.env.NODE_ENV);
 app.use(express.json());
 app.use(cookieParser());
 import userRoute from './route/user/auth.route';
