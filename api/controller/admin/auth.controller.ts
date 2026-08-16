@@ -39,16 +39,23 @@ export const login = async (req: Request, res: Response) => {
     }
     const access_token = jwt.sign({ id: user.user_id, role: user.role }, token, { expiresIn: '30d' });
     const { password: _, ...userData } = user;
-    const isProduction = process.env.NODE_ENV === "production";
+    // const isProduction = process.env.NODE_ENV === "production";
     // res.cookie("token", access_token, {
     //     httpOnly: true,
     //     sameSite: isProduction ? "none" : "lax",
     //     secure: isProduction, 
     // });
+    // res.cookie("token", access_token, {
+    //   httpOnly: true,
+    //   secure: isProduction,
+    //   sameSite: isProduction ? "none" : "lax",
+    //   maxAge: 30 * 24 * 60 * 60 * 1000,
+    // });
     res.cookie("token", access_token, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
+      secure: true,
+      sameSite: "none",
+      path: "/",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     });
     console.log(userData, access_token);
