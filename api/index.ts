@@ -8,11 +8,27 @@ const app = express();
 // app.use(cookieParser());
 // app.use(express.json());
 const PORT = process.env.PORT || 5000;
-app.use(cors({
-    origin: ['https://frontend-todolist-49qmw05ae-tit-limengs-projects.vercel.app','https://backend-todolist-alpha.vercel.app'],
-    credentials: true,
-}))
+// app.use(cors({
+//     origin: ['https://frontend-todolist-49qmw05ae-tit-limengs-projects.vercel.app','https://backend-todolist-alpha.vercel.app'],
+//     credentials: true,
+// }))
+const allowedOrigins = [
+  "https://frontend-todolist-49qmw05ae-tit-limengs-projects.vercel.app",
+  "https://frontend-todolist-git-main-tit-limengs-projects.vercel.app",
+];
 
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 import userRoute from './route/user/auth.route';
