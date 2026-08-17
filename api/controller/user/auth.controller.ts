@@ -30,7 +30,7 @@ export const createUser = async (req: Request, res: Response) => {
             const otpCodeSend = `INSERT INTO email_otp(user_id , otp_code,expires_at) VALUES($1,$2,$3) RETURNING *`;
 
             const otpVerify = await pool.query(otpCodeSend, [user.user_id, otp, expires]);
-
+            console.log("this is otp verify : ", otpVerify.rows[0] , otp,user);
             if (otpVerify.rows.length === 0) return res.status(500).json({ message: 'Failed to create new OTP' });
 
             const transporter = nodeMailer.createTransport({
