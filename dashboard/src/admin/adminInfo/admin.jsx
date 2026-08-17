@@ -82,19 +82,14 @@ export default function AdminDetails() {
                   <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Created</th> */}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border">
+              {/* <tbody className="divide-y divide-border">
                 {adminData.length > 0 ? (
                   adminData.map((user, index) => (
                     <tr key={index} className="hover:bg-secondary/20 transition-colors">
                       <td className="px-6 py-4 text-foreground font-medium">{user.username}</td>
                       <td className="px-6 py-4 text-muted-foreground text-sm">{user.email}</td>
                       <td className="px-6 py-4">
-                        {/* <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[task.status]
-                            }`}
-                        >
-                          {task.status.charAt(0).toUpperCase() + task.status.slice(1).replace('-', ' ')}
-                        </span> */}
+                       
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-medium
                             ${user.role_id === 1 ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"  }`}
@@ -123,7 +118,73 @@ export default function AdminDetails() {
                     </td>
                   </tr>
                 )}
-              </tbody>
+              </tbody> */}
+
+              <tbody className="divide-y divide-border">
+  {adminData.length > 0 ? (
+    adminData.map((user, index) => (
+      <tr
+        key={index}
+        className="hover:bg-secondary/20 transition-colors"
+      >
+        <td className="px-6 py-4 text-foreground font-medium">
+          {user.username}
+        </td>
+
+        <td className="px-6 py-4 text-muted-foreground text-sm">
+          {user.email}
+        </td>
+
+        <td className="px-6 py-4">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-medium ${
+              user.role_id === 1
+                ? "bg-green-100 text-green-800"
+                : "bg-blue-100 text-blue-800"
+            }`}
+          >
+            {user.role_id === 1 ? "Admin" : "User"}
+          </span>
+        </td>
+
+        <td className="px-6 py-4 text-muted-foreground text-sm">
+          {new Date(user.created_at).toLocaleDateString()}
+        </td>
+
+        <td className="px-6 py-4">
+          <span className="px-3 py-1 rounded-full text-xs font-medium">
+            View
+          </span>
+        </td>
+      </tr>
+    ))
+  ) : (
+    // Skeleton
+    Array.from({ length: 5 }).map((_, index) => (
+      <tr key={index} className="animate-pulse">
+        <td className="px-6 py-4">
+          <div className="h-4 w-28 rounded bg-muted" />
+        </td>
+
+        <td className="px-6 py-4">
+          <div className="h-4 w-40 rounded bg-muted" />
+        </td>
+
+        <td className="px-6 py-4">
+          <div className="h-6 w-16 rounded-full bg-muted" />
+        </td>
+
+        <td className="px-6 py-4">
+          <div className="h-4 w-24 rounded bg-muted" />
+        </td>
+
+        <td className="px-6 py-4">
+          <div className="h-6 w-12 rounded bg-muted" />
+        </td>
+      </tr>
+    ))
+  )}
+</tbody>
             </table>
           </div>
 
