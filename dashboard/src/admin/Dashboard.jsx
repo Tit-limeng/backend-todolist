@@ -83,7 +83,7 @@ function AdminDashboard() {
           />
           <StatCard
             title="Pending Tasks"
-            value={pendingTask+'%'}
+            value={pendingTask}
             icon="📈"
           // trend={{ value: 3, isPositive: true }}
           />
