@@ -21,9 +21,9 @@ const statusColors = {
 }
 function AdminDashboard() {
   const [totalUsers, setTotalUsers] = useState(Loading);
-  const [totalTasks, settotalTasks] = useState(0);
-  const [completedTasks, setcompletedTasks] = useState(0);
-  const [pendingTask, setPendingTasks] = useState(0);
+  const [totalTasks, settotalTasks] = useState(Loading);
+  const [completedTasks, setcompletedTasks] = useState(Loading);
+  const [pendingTask, setPendingTasks] = useState(Loading);
   const [users, setUsers] = useState([]);
   useEffect(() => {
     const TotalUsers = async () => {

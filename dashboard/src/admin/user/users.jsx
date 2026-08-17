@@ -2,20 +2,6 @@ import { useEffect, useState } from 'react'
 import AdminLayout from '../../component/admin_layout'
 import { getAllUserByAdmin } from '../../config/api/api'
 
-// Mock user data
-// const mockUsers = [
-//   { id: 1, name: 'Alex Morgan', email: 'alex@example.com', status: 'active', joinDate: 'Jan 15, 2024', tasks: 12 },
-//   { id: 2, name: 'Sarah Johnson', email: 'sarah@example.com', status: 'active', joinDate: 'Feb 3, 2024', tasks: 8 },
-//   { id: 3, name: 'Jordan Smith', email: 'jordan@example.com', status: 'active', joinDate: 'Jan 28, 2024', tasks: 15 },
-//   { id: 4, name: 'Sam Wilson', email: 'sam@example.com', status: 'inactive', joinDate: 'Mar 10, 2024', tasks: 5 },
-//   { id: 5, name: 'Casey Brown', email: 'casey@example.com', status: 'active', joinDate: 'Feb 22, 2024', tasks: 9 },
-//   { id: 6, name: 'Taylor Davis', email: 'taylor@example.com', status: 'active', joinDate: 'Mar 5, 2024', tasks: 7 },
-// ]
-// const statusColors = {
-//   completed: 'bg-primary text-green-100',
-//   pending: 'bg-gray-100 text-gray-800',
-// }
-
 export default function AdminUsers() {
   const [userData, setUserData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('')

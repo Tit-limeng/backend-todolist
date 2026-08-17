@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../../component/admin_layout'
 import { getUserTask } from '../../config/api/api'
-
+import Loading from '../../component/Loading'
 const statusColors = {
   completed: 'bg-green-100 text-green-800',
   'in_progress': 'bg-blue-100 text-blue-800',
@@ -19,6 +19,7 @@ export default function AdminTasks() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all');
   const [usersTask, setUsersTask] = useState([]);
+  const [loading, ] = useState(Loading);
   const filteredTasks = usersTask.filter(
     task =>
       (task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -27,7 +28,7 @@ export default function AdminTasks() {
   )
 
   const stats = {
-    total: usersTask.length,
+    total: loading ? <Loading /> : usersTask.length,
     completed: usersTask.filter(t => t.status === 'completed').length,
     inProgress: usersTask.filter(t => t.status === 'in_progress').length,
     pending: usersTask.filter(t => t.status === 'pending').length,
@@ -51,7 +52,6 @@ export default function AdminTasks() {
           <h1 className="text-3xl font-bold text-foreground mb-2">Tasks Monitoring</h1>
           <p className="text-muted-foreground">Monitor and track all user tasks</p>
         </div>
-
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-card rounded-lg border border-border p-4">
