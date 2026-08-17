@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react'
 import AdminLayout from '../component/admin_layout'
 import StatCard from '../component/state_card'
 import { getUserCount, getTaskCompletedCount, getTaskCount, getTaskPendingCount, getTopUserTask } from '../config/api/api'
-
+import 'ldrs/ring';
+import Loading from '../component/Loading';
 // Mock data
 const recentTasks = [
   { id: 1, user: 'Alex Morgan', task: 'Complete project proposal', status: 'completed', time: '2 hours ago' },
@@ -18,9 +19,8 @@ const statusColors = {
   'in-progress': 'bg-blue-100 text-blue-800',
   pending: 'bg-yellow-100 text-yellow-800',
 }
-
 function AdminDashboard() {
-  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(Loading);
   const [totalTasks, settotalTasks] = useState(0);
   const [completedTasks, setcompletedTasks] = useState(0);
   const [pendingTask, setPendingTasks] = useState(0);
