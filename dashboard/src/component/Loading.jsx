@@ -8,7 +8,7 @@ export default function Loading () {
     return(
         <>
         <Tailspin 
-        size="30"
+        size="20"
         stroke="5"
         speed="0.9"
         color="#f11946" 
