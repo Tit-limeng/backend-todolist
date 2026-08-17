@@ -28,7 +28,7 @@ export default function AdminTasks() {
   )
 
   const stats = {
-    total: loading ? <Loading /> : usersTask.length,
+    total: loading ? usersTask.length : <Loading />,
     completed: usersTask.filter(t => t.status === 'completed').length,
     inProgress: usersTask.filter(t => t.status === 'in_progress').length,
     pending: usersTask.filter(t => t.status === 'pending').length,
