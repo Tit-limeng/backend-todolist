@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../../component/admin_layout'
 import { getUserTask } from '../../config/api/api'
-import Loading from '../../component/Loading'
+
 const statusColors = {
   completed: 'bg-green-100 text-green-800',
   'in_progress': 'bg-blue-100 text-blue-800',
@@ -19,7 +19,6 @@ export default function AdminTasks() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all');
   const [usersTask, setUsersTask] = useState([]);
-  const [loading, ] = useState(Loading);
   const filteredTasks = usersTask.filter(
     task =>
       (task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,7 +27,7 @@ export default function AdminTasks() {
   )
 
   const stats = {
-    total: loading ? usersTask.length : <Loading />,
+    total: usersTask.length,
     completed: usersTask.filter(t => t.status === 'completed').length,
     inProgress: usersTask.filter(t => t.status === 'in_progress').length,
     pending: usersTask.filter(t => t.status === 'pending').length,
