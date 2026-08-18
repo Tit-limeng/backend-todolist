@@ -1,23 +1,39 @@
 import { useEffect, useState } from 'react'
 import AdminLayout from '../../component/admin_layout'
-import { getAllUserByAdmin } from '../../config/api/api'
+import { api, getAllUserByAdmin } from '../../config/api/api'
 
 export default function AdminUsers() {
   const [userData, setUserData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('')
-
+  const [openMenu, setOpenMenu] = useState(null);
   const filteredUsers = userData.filter(
     user =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  );
 
- 
-  useEffect(() => {
-     const allUser = async () => {
-    const data = await getAllUserByAdmin();
-    setUserData(data);
+  const handleRemoveUser = async (userId) => {
+    try {
+      const response = await api.delete(`/admin/removeUser/${userId}`, {
+        withCredentials: true,
+      });
+      console.log('User removed successfully:', response.data);
+      // console.log("Remove user:", user.user_id);
+
+      setOpenMenu(null);
+      const updatedUsers = await getAllUserByAdmin();
+      setUserData(updatedUsers);
+    } catch (error) {
+      console.error('Error removing user:', error);
+    }
   }
+
+
+  useEffect(() => {
+    const allUser = async () => {
+      const data = await getAllUserByAdmin();
+      setUserData(data);
+    }
 
     allUser();
   }, [])
@@ -57,7 +73,7 @@ export default function AdminUsers() {
               </thead>
               <tbody className="divide-y divide-border">
                 {filteredUsers.length > 0 ? (
-                  filteredUsers.map((user , index) => (
+                  filteredUsers.map((user, index) => (
                     <tr key={index} className="hover:bg-secondary/20 transition-colors">
                       <td className="px-6 py-4 text-foreground font-medium">{user.username}</td>
                       <td className="px-6 py-4 text-muted-foreground text-sm">{user.email}</td>
@@ -72,13 +88,44 @@ export default function AdminUsers() {
                         </span>
                       </td> */}
                       <td className="px-6 py-4 text-muted-foreground text-sm">
-                          {new Date(user.user_created_at).toLocaleDateString()}
-                        </td>
+                        {new Date(user.user_created_at).toLocaleDateString()}
+                      </td>
                       <td className="px-6 py-4 text-foreground font-medium">{user.total_todos}</td>
                       <td className="px-6 py-4">
-                        <button className="text-primary hover:text-primary/80 text-sm font-medium transition-colors">
+                        {/* <button className="text-primary hover:text-primary/80 text-sm font-medium cursor-pointer transition-colors">
                           View
-                        </button>
+                        </button> */}
+                        <td className="px-6 py-4 relative">
+                          <button
+                            onClick={() =>
+                              setOpenMenu(openMenu === index ? null : index)
+                            }
+                            className="text-primary hover:text-primary/80 text-sm font-medium cursor-pointer transition-colors"
+                          >
+                            View
+                          </button>
+
+                          {openMenu === index && (
+                            <div className="absolute right-6 top-12 z-50 w-32 rounded-lg border border-border bg-background shadow-lg">
+                              <button
+                                onClick={() => {
+                                  console.log("Edit user:", user.user_id);
+                                  setOpenMenu(null);
+                                }}
+                                className="block w-full px-4 py-2 text-left text-sm hover:bg-secondary/50 transition-colors"
+                              >
+                                Edit
+                              </button>
+
+                              <button
+                              onClick={()=> handleRemoveUser(user.user_id)}
+                                className="block w-full px-4 py-2 text-left text-sm text-destructive hover:bg-secondary/50 transition-colors"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          )}
+                        </td>
                       </td>
                     </tr>
                   ))

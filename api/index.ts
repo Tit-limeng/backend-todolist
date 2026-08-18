@@ -22,6 +22,7 @@ app.use(
     origin: [
       "https://backend-todolist-alpha.vercel.app",
       "https://frontend-todolist-sigma.vercel.app",
+      "http://localhost:3000"
     ],
     credentials: true,
   })

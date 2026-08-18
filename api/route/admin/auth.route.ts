@@ -1,10 +1,11 @@
 import { Express } from "express"
-import { login ,getAdminInfo,getAllUser} from "../../controller/admin/auth.controller";
+import { login ,getAdminInfo,getAllUser, removeUserByAdmin} from "../../controller/admin/auth.controller";
 import { Authentication } from "../../middleware/auth.middleware";
 const auth = ( app : Express ) => {
     app.post('/api/admin/login' , login);
     app.get('/api/admin/getInfo' ,Authentication("ADMIN"), getAdminInfo);
-    app.get('/api/admin/getAllUser' , Authentication("ADMIN"),getAllUser)
+    app.get('/api/admin/getAllUser' , Authentication("ADMIN"),getAllUser);
+    app.delete('/api/admin/removeUser/:user_id',Authentication("ADMIN"),removeUserByAdmin);
 }
 
 export default auth ;

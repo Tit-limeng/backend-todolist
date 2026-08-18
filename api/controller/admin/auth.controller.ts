@@ -97,39 +97,6 @@ export const getAdminInfo = async (req: Request, res: Response) => {
 
 //get all user by admin 
 
-// export const getAllUser = async (req: Request, res: Response) => {
-//     try {
-//         // const query = `SELECT * FROM users LEFT JOIN todos ON users.user_id = todos.user_id where users.role_id = 2 ORDER BY users.created_at DESC `;
-// //         const query = `SELECT
-// //     u.user_id,
-// //     u.username,
-// //     u.email,
-// //     u.role_id,
-// //     u.login,
-// //     u.verify,
-// //     u.created_at AS user_created_at,
-
-// //     t.todo_id,
-// //     t.title,
-// //     t.description,
-// //     t.status,
-// //     t.priority,
-// //     t.due_date,
-// //     t.created_at AS todo_created_at,
-// //     t.updated_at , COUNT(todo_id)
-// // FROM users u
-// // LEFT JOIN todos t
-// // ON u.user_id = t.user_id
-// // WHERE u.role_id = 2;`
-//         const result = await pool.query(query);
-//         if (result.rows) return messageResponse({ res, status: 200, message: "get user data successfully !", data: result.rows, error: false });
-//         return messageResponse({ res, status: 404, message: "data not found ", data: [], error: true });
-
-//     } catch (error) {
-//         return messageResponse({ res, status: 500, message: "internal server error", data: [], error: error });
-//     }
-// }
-
 export const getAllUser = async (req: Request, res: Response) => {
   try {
     const query = `
@@ -187,3 +154,22 @@ export const getAllUser = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+//remove user by admin
+
+export const removeUserByAdmin = async (req: Request, res: Response) => {
+  try {
+    const { user_id } = req.params;
+    console.log("user_id to remove:", user_id);
+    const query = `DELETE FROM users WHERE user_id=$1 RETURNING *`;
+    const result = await pool.query(query, [user_id]);
+    console.log("result of delete query:", result);
+    if (result.rows.length > 0) {
+      return messageResponse({ res, status: 200, message: "user removed successfully", data: [], error: false });
+    }
+    return messageResponse({ res, status: 404, message: "user not found", data: [], error: true });
+  } catch (error) {
+    return messageResponse({ res, status: 500, message: "internal server error", data: [], error: error });
+  }
+}

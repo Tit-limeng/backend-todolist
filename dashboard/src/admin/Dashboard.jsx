@@ -121,7 +121,7 @@ function AdminDashboard() {
             </div>
           </div>
 
-          {/* Top Users */}
+          
           <div>
             <div className="bg-card rounded-lg border border-border shadow-sm">
               <div className="p-6 border-b border-border">
